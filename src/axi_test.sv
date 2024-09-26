@@ -370,6 +370,52 @@ package axi_test;
       @(posedge axi.clk_i);
     endtask
 
+	/// Issue a beat on the AW channel.
+	task send_aw_w (
+	  input ax_beat_t aw_beat,
+	  input w_beat_t w_beat
+	);
+	  axi.aw_id     <= #TA aw_beat.ax_id;
+	  axi.aw_addr   <= #TA aw_beat.ax_addr;
+	  axi.aw_len    <= #TA aw_beat.ax_len;
+	  axi.aw_size   <= #TA aw_beat.ax_size;
+	  axi.aw_burst  <= #TA aw_beat.ax_burst;
+	  axi.aw_lock   <= #TA aw_beat.ax_lock;
+	  axi.aw_cache  <= #TA aw_beat.ax_cache;
+	  axi.aw_prot   <= #TA aw_beat.ax_prot;
+	  axi.aw_qos    <= #TA aw_beat.ax_qos;
+	  axi.aw_region <= #TA aw_beat.ax_region;
+	  axi.aw_atop   <= #TA aw_beat.ax_atop;
+	  axi.aw_user   <= #TA aw_beat.ax_user;
+	  axi.aw_valid  <= #TA 1;
+	  axi.w_data  <= #TA w_beat.w_data;
+	  axi.w_strb  <= #TA w_beat.w_strb;
+	  axi.w_last  <= #TA w_beat.w_last;
+	  axi.w_user  <= #TA w_beat.w_user;
+	  axi.w_valid <= #TA 1;
+	  cycle_start();
+	  while (axi.aw_ready != 1 && axi.w_ready != 1) begin cycle_end(); cycle_start(); end
+	  cycle_end();
+	  axi.aw_id     <= #TA '0;
+	  axi.aw_addr   <= #TA '0;
+	  axi.aw_len    <= #TA '0;
+	  axi.aw_size   <= #TA '0;
+	  axi.aw_burst  <= #TA '0;
+	  axi.aw_lock   <= #TA '0;
+	  axi.aw_cache  <= #TA '0;
+	  axi.aw_prot   <= #TA '0;
+	  axi.aw_qos    <= #TA '0;
+	  axi.aw_region <= #TA '0;
+	  axi.aw_atop   <= #TA '0;
+	  axi.aw_user   <= #TA '0;
+	  axi.aw_valid  <= #TA 0;
+	  axi.w_data  <= #TA '0;
+	  axi.w_strb  <= #TA '0;
+	  axi.w_last  <= #TA '0;
+	  axi.w_user  <= #TA '0;
+	  axi.w_valid <= #TA 0;
+	endtask
+
     /// Issue a beat on the AW channel.
     task send_aw (
       input ax_beat_t beat
@@ -678,7 +724,7 @@ package axi_test;
     endtask
 
   endclass
-
+/*
   class axi_rand_master #(
     // AXI interface parameters
     parameter int   AW = 32,
@@ -1823,7 +1869,7 @@ package axi_test;
       join
     endtask
   endclass
-
+*/
   /// AXI Monitor.
   class axi_monitor #(
     /// AXI4+ATOP ID width
@@ -1897,6 +1943,10 @@ package axi_test;
       join
     endtask
   endclass
+  
+  
+
+  
 
   /// `axi_scoreboard` models a memory that only gets changed by the monitored AXI4+ATOP bus.
   ///
